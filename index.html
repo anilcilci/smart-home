@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+    <head>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <style type="text/css">
+.div {
+    float: left;
+    height: 120px;
+    width: 90px;
+    margin: 10px;
+    color: #ffffff;
+    background-color: #4caf50 ;
+}
+      </style>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <script src='http://code.jquery.com/jquery-latest.min.js'></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.2/socket.io.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+        <script type="text/javascript">
+
+        $(document).ready(function(){
+            $('ul.tabs').tabs();
+           });
+
+            var socket = io.connect('IP ADDRESS:PORT');
+            socket.on( 'giden', function( data ){
+               $('#heat').text( data.sicaklik + "*C" );
+               if (data.hareket=="1") {
+                  document.getElementById("hareketId").style.backgroundColor  = "#f44336";
+                  $('#move').text("Hareket Var");
+                }
+                else if(data.hareket=="0"){
+                  document.getElementById("hareketId").style.backgroundColor  = "#4caf50";
+                  $('#move').text("Hareket Yok");
+                }
+                if (data.alev=="1") {
+                  document.getElementById("alevId").style.backgroundColor  = "#f44336";
+                  $('#burn').text("Yangın Var");
+                }
+                else if(data.alev=="0"){
+                  document.getElementById("alevId").style.backgroundColor  = "#4caf50";
+                  $('#burn').text("Yangın Yok");
+                }
+                if (data.mesafe<="20") {
+                  document.getElementById("carId").style.backgroundColor  = "#f44336";
+                  $('#carText').text("Garaj Dolu");
+                }
+                else if (data.mesafe>"20") {
+                  document.getElementById("carId").style.backgroundColor  = "#4caf50";
+                  $('#carText').text("Garaj Boş");
+                }
+
+            $(document).ready(function(){
+                $("#aydinlat").click(function() {
+                    socket.emit('led' ,"aydinlat");
+                })
+            });
+            $(document).ready(function(){
+                $("#karart").click(function() {
+                    socket.emit('led' ,"karart");
+                })
+            });
+             
+            socket.on('error', function() { console.error(arguments) });
+            socket.on('message', function() { console.log(arguments) });
+        </script>
+    </head>
+    <body>
+<div class="container" style="margin-top:  40px">
+<div class="card">
+    <div class="card-content">
+      <h4 class="red-text hide-on-small-only hide-on-med-down center">HOŞGELDİNİZ</h4>
+    </div>
+    <div class="card-tabs">
+      <ul class="tabs tabs-fixed-width">
+        <li class="tab"><a  class="active" href="#test4">Akıllı Ev ve Otopark Sistemi</a></li>
+      </ul>
+    </div>
+    <div class="card-content grey lighten-4">
+      <div id="test4">
+        <div class="container center">
+        <form method="post" action="" enctype="multipart/form-data" >
+          <div class="row">
+          <div class="card-panel">
+          <br>
+          <a id="aydinlat" class="waves-effect waves-light btn green">Işığı Aç</a>
+          <a id="karart" class="waves-effect waves-light btn red">Işığı Kapat</a>
+         <br>
+         <div class="container">
+           <div class="row">
+            <div class="div card-panel" id="alevId"><img src="http://anilcilci.xyz/img/fire.png" class="responsive-img"><p align="center" id="burn"></p></div>
+        <div class="div card-panel">  <img src="http://anilcilci.xyz/img/thermometer.png" class="responsive-img"> <p align="center" id="heat"></p></div>
+            <div class="div card-panel" id="hareketId"><img src="http://anilcilci.xyz/img/move.png" class="responsive-img"><p align="center" id="move"></p></div>
+            <div class="div card-panel" id="carId">  <img src="http://anilcilci.xyz/img/car.png" class="responsive-img"> <p id="carText"></p>  </div> 
+           </div>
+            </div>
+          </div>
+          </div>
+          </div>
+          </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+    </body>
+</html>
